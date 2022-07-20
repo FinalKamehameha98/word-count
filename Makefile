@@ -1,5 +1,5 @@
 C=gcc
-GCCFLAGS=-Wall -Wextra -g -
+GCCFLAGS=-Wall -Wextra -g -std=c99
 
 TARGETS=simple_wc
 
