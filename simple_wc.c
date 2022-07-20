@@ -9,43 +9,68 @@
 
 #include <stdio.h>
 #include <ctype.h>
-#define COUNT_SIZE 3
+#include <stdbool.h>
+
+#define LINE_INDEX 0
+#define WORD_INDEX 1
+#define CHAR_INDEX 2
+
+void get_count(int count[], FILE *stream);
 
 int main(int argc, char *argv[]){
-    //int count[COUNT_SIZE];
-    //memset(count, 0, sizeof(count));
+    //count[0] = line count, count[1] = word count, count[2] = char count
+    int count[] = {0, 0, 0};
+
     switch(argc){
         case 1: // Count from standard input
-            printf("Standard Input Case\n");
-            //get_count(count, stdin);
+            get_count(count, stdin);
+            printf("%d | %d | %d\n", count[LINE_INDEX], count[WORD_INDEX], count[CHAR_INDEX]);
+            //print_count(count);
             // TODO: Implement code for handling stdin
             break;
 
         case 2: // Count from 1 file
-            printf("One File Case\n");
-            //FILE *file = fopen(argv[1], "r");
-            //get_count(count, file);
-            // TODO: Implement code for handling 1 file
-            //fclose(file);
             break;
 
         default: // Count from >1 file
-            printf("Many Files Case\n");
-            //int total[COUNT_SIZE];
-            //memset(total, 0, sizeof(total));
-            //for(int i = 0; i < COUNT_SIZE){
-            //    get_count(
-
-            //}
+            break;
             // TODO: Implement code for handling >1 file
     }
+    return 0;
 }
 
 /**
  * 
- * @param stream: 
+ *
+ * @param count: 
+ * @param stream:
  */
 void get_count(int count[], FILE *stream){
-    //TODO: Implement code to read file and print count
+    int current_char = -1;
+    bool in_word = false;
+
+    while((current_char = fgetc(stream)) != EOF){
+        if(isspace(current_char)){
+            if(!isblank(current_char)){
+                count[LINE_INDEX]++;
+            }
+            if(in_word){
+                count[WORD_INDEX]++;
+                in_word = false;
+            }
+        }
+        else{
+            in_word = true;
+        }
+        count[CHAR_INDEX]++;
+    }
+    if(in_word){
+        count[WORD_INDEX]++;
+    }
 }
 
+/*
+void print_count(int count[]){
+    printf("%-5s | %-5s | %-5s | %*s\n", -
+}
+*/
