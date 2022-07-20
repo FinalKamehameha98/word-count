@@ -23,6 +23,6 @@ echo
 # Testing with >1 Files
 echo "Testing with >1 Files"
 echo "---------------------"
-./simple_wc test_files/*
-wc test_files/*
+./simple_wc test_files/*.txt
+wc test_files/*.txt
 echo

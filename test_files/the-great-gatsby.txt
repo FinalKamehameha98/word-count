@@ -17,6 +17,7 @@ Release Date: January 17, 2021 [eBook #64317]
 
 Language: English
 
+Character set encoding: UTF-8
 
 Produced by: Alex Cabal for the Standard Ebooks project, based on a
              transcription produced for Project Gutenberg Australia.
