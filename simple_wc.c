@@ -18,25 +18,27 @@
 #define CHAR_INDEX 2
 
 void get_count(int count[], FILE *stream);
+void print_count(int count[], const char *filename);
 
 int main(int argc, char *argv[]){
     // count[0]=line count, count[1]=word count, count[2]=char count
     int count[] = {0, 0, 0};
 
-    if(argc == 1){ // Count from standard input
+    if(argc == 1){ // Get count from standard input
         get_count(count, stdin);
-        printf("%d | %d | %d\n", count[LINE_INDEX], count[WORD_INDEX], count[CHAR_INDEX]);
+        print_count(count, "stdin");
     }
-    else{ // Count from >=1 file
+    else{ // Get count from >=1 file
         FILE *file;
         int total[] = {0, 0, 0}; //total[0]=line total, total[1]=word total, total[2]=char total
-        for(int i = 1; i < argc; i++){
+        
+        for(int i = 1; i < argc; i++){ // Count every file on the command line
             if((file = fopen(argv[i], "r")) == NULL){
                 perror("Failed to open file");
                 exit(1);
             }
             get_count(count, file);
-            printf("%d | %d | %d\n", count[LINE_INDEX], count[WORD_INDEX], count[CHAR_INDEX]);
+            print_count(count, argv[i]);
             if(fclose(file) == EOF){
                 perror("Failed to close file stream");
                 exit(1);
@@ -46,50 +48,24 @@ int main(int argc, char *argv[]){
             total[CHAR_INDEX] += count[CHAR_INDEX];
             memset(count, 0, sizeof(count));
         }
-        if(argc > 2){
-            printf("%d | %d | %d | %s\n", total[LINE_INDEX], total[WORD_INDEX], total[CHAR_INDEX], "TOTAL");
+        if(argc > 2){ // Only print total for >1 file
+            print_count(total, "Total");
         }
     }
-    /*
-    switch(argc){
-        case 1: // Count from standard input
-            get_count(count, stdin);
-            printf("%d | %d | %d\n", count[LINE_INDEX], count[WORD_INDEX], count[CHAR_INDEX]);
-            //print_count(count);
-            break;
-
-        case 2: // Count from 1 file
-            if((file = fopen(argv[1], "r")) == NULL){
-                perror("Failed to open file");
-                exit(1);
-            }
-            get_count(count, file);
-            printf("%d | %d | %d\n", count[LINE_INDEX], count[WORD_INDEX], count[CHAR_INDEX]);
-            if(fclose(file) == EOF){
-                perror("Failed to close file stream");
-                exit(1);
-            }
-            break;
-
-        default: // Count from >1 file
-
-            break;
-            // TODO: Implement code for handling >1 file
-    }
-    */
     return 0;
 }
 
 /**
- * 
+ * Counts the number of lines, words, and characters from a given data stream
  *
- * @param count: 
- * @param stream:
+ * @param count Array counter to hold line, word, and character counts
+ * @param stream: Data stream representing a file or standard input
  */
 void get_count(int count[], FILE *stream){
     int current_char = -1;
     bool in_word = false;
 
+    // Read every character from file/stdin until EOF
     while((current_char = fgetc(stream)) != EOF){
         if(isspace(current_char)){
             if(current_char == '\n'){
@@ -110,8 +86,13 @@ void get_count(int count[], FILE *stream){
     }
 }
 
-/*
-void print_count(int count[]){
-    printf("%-5s | %-5s | %-5s | %*s\n", -
+/**
+ * Prints out the counts for a given file (or stdin) in a table-like format
+ *
+ * @param count Array counter that holds line, word, and character counts
+ * @param filename Name of the file that was counted
+ */
+void print_count(int count[], const char *filename){
+    printf("%-10d | %-10d | %-10d | %-10s\n", count[LINE_INDEX], count[WORD_INDEX], count[CHAR_INDEX], filename);
 }
-*/
+
