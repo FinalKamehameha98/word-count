@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <stdbool.h>
+#include <string.h>
 
 #define LINE_INDEX 0
 #define WORD_INDEX 1
@@ -19,10 +20,37 @@
 void get_count(int count[], FILE *stream);
 
 int main(int argc, char *argv[]){
-    //count[0] = line count, count[1] = word count, count[2] = char count
+    // count[0]=line count, count[1]=word count, count[2]=char count
     int count[] = {0, 0, 0};
-    FILE *file;
 
+    if(argc == 1){ // Count from standard input
+        get_count(count, stdin);
+        printf("%d | %d | %d\n", count[LINE_INDEX], count[WORD_INDEX], count[CHAR_INDEX]);
+    }
+    else{ // Count from >=1 file
+        FILE *file;
+        int total[] = {0, 0, 0}; //total[0]=line total, total[1]=word total, total[2]=char total
+        for(int i = 1; i < argc; i++){
+            if((file = fopen(argv[i], "r")) == NULL){
+                perror("Failed to open file");
+                exit(1);
+            }
+            get_count(count, file);
+            printf("%d | %d | %d\n", count[LINE_INDEX], count[WORD_INDEX], count[CHAR_INDEX]);
+            if(fclose(file) == EOF){
+                perror("Failed to close file stream");
+                exit(1);
+            }
+            total[LINE_INDEX] += count[LINE_INDEX];
+            total[WORD_INDEX] += count[WORD_INDEX];
+            total[CHAR_INDEX] += count[CHAR_INDEX];
+            memset(count, 0, sizeof(count));
+        }
+        if(argc > 2){
+            printf("%d | %d | %d | %s\n", total[LINE_INDEX], total[WORD_INDEX], total[CHAR_INDEX], "TOTAL");
+        }
+    }
+    /*
     switch(argc){
         case 1: // Count from standard input
             get_count(count, stdin);
@@ -44,9 +72,11 @@ int main(int argc, char *argv[]){
             break;
 
         default: // Count from >1 file
+
             break;
             // TODO: Implement code for handling >1 file
     }
+    */
     return 0;
 }
 
