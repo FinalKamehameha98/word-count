@@ -8,6 +8,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <ctype.h>
 #include <stdbool.h>
 
@@ -20,16 +21,26 @@ void get_count(int count[], FILE *stream);
 int main(int argc, char *argv[]){
     //count[0] = line count, count[1] = word count, count[2] = char count
     int count[] = {0, 0, 0};
+    FILE *file;
 
     switch(argc){
         case 1: // Count from standard input
             get_count(count, stdin);
             printf("%d | %d | %d\n", count[LINE_INDEX], count[WORD_INDEX], count[CHAR_INDEX]);
             //print_count(count);
-            // TODO: Implement code for handling stdin
             break;
 
         case 2: // Count from 1 file
+            if((file = fopen(argv[1], "r")) == NULL){
+                perror("Failed to open file");
+                exit(1);
+            }
+            get_count(count, file);
+            printf("%d | %d | %d\n", count[LINE_INDEX], count[WORD_INDEX], count[CHAR_INDEX]);
+            if(fclose(file) == EOF){
+                perror("Failed to close file stream");
+                exit(1);
+            }
             break;
 
         default: // Count from >1 file
@@ -51,7 +62,7 @@ void get_count(int count[], FILE *stream){
 
     while((current_char = fgetc(stream)) != EOF){
         if(isspace(current_char)){
-            if(!isblank(current_char)){
+            if(current_char == '\n'){
                 count[LINE_INDEX]++;
             }
             if(in_word){
