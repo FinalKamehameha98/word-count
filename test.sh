@@ -1,17 +1,28 @@
 #!/bin/bash
 
-# Testing with No Files (AKA Using stdin)
 
+# Setup Executable
+make clean -s
+make -s
+
+
+# Testing with No Files (AKA Using stdin)
 echo "Testing with No Files"
-echo "_____________________"
-make clean 
+echo "---------------------"
+./simple_wc < test_files/lorem1.txt
+wc < test_files/lorem1.txt
+echo
 
 # Testing with 1 File
-
 echo "Testing with 1 File"
-
+echo "-------------------"
+./simple_wc test_files/lorem1.txt
+wc test_files/lorem1.txt
+echo
 
 # Testing with >1 Files
-
 echo "Testing with >1 Files"
 echo "---------------------"
+./simple_wc test_files/*
+wc test_files/*
+echo
